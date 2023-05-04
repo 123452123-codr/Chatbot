@@ -21,14 +21,14 @@ def wish():
     else:
         speak("Good evening!")
 
-    speak("Hello sir, I am your personal assistant, George. How may I help you?")
+    speak("Hello, I am your guide to Sustainable Development Goals. I am here to help you with the SDG goals.")
 
 
 def command():
     r = sr.Recognizer()
     with sr.Microphone() as source:
-        print("Ask me anything...")
-        speak("Ask me anything...")
+        print("Ask me anything about them...")
+        speak("Ask me anything about them...")
         r.pause_threshold = 3
         audio = r.listen(source)
 
