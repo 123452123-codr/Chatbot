@@ -1,43 +1,46 @@
-# This code simulates the key distribution process of quantum encryption
+import tkinter as tk
+from tkinter import scrolledtext, messagebox
 
-import random
+def send_message():
+    message = entry_message.get()
+    if message.strip() != "":
+        chat_area.config(state=tk.NORMAL)
+        chat_area.insert(tk.END, "You: " + message + "\n")
+        chat_area.config(state=tk.DISABLED)
+        entry_message.delete(0, tk.END)
+        # You can add code here to send the message to the other person or a server if needed.
 
-# Function to simulate quantum key distribution
-def quantum_key_distribution(bits):
-    alice_bits = [random.choice([0, 1]) for _ in range(bits)]
-    alice_bases = [random.choice(['X', '+']) for _ in range(bits)]
-    
-    bob_bases = [random.choice(['X', '+']) for _ in range(bits)]
-    
-    bob_results = []
-    for i in range(bits):
-        if alice_bases[i] == bob_bases[i]:
-            bob_results.append(alice_bits[i])
-        else:
-            bob_results.append(random.choice([0, 1]))
-    
-    return alice_bits, alice_bases, bob_bases, bob_results
+def receive_message():
+    message = "Received message from the other person."
+    chat_area.config(state=tk.NORMAL)
+    chat_area.insert(tk.END, "Other: " + message + "\n")
+    chat_area.config(state=tk.DISABLED)
 
-# Function to filter matching bits and create a secure key
-def filter_matching_bits(alice_bases, bob_bases, bob_results):
-    matching_indices = [i for i in range(len(alice_bases)) if alice_bases[i] == bob_bases[i]]
-    filtered_key = [bob_results[i] for i in matching_indices]
-    return filtered_key
+def on_close():
+    if messagebox.askokcancel("Quit", "Do you want to quit?"):
+        root.destroy()
 
-def main():
-    bits = 10  # Number of qubits (bits) to simulate
-    
-    # Simulate quantum key distribution
-    alice_bits, alice_bases, bob_bases, bob_results = quantum_key_distribution(bits)
-    
-    # Filter matching bits to create a secure key
-    secure_key = filter_matching_bits(alice_bases, bob_bases, bob_results)
-    
-    print("Alice's bits:", alice_bits)
-    print("Alice's bases:", alice_bases)
-    print("Bob's bases:", bob_bases)
-    print("Bob's results:", bob_results)
-    print("Secure key:", secure_key)
+root = tk.Tk()
+root.title("Chatting Interface")
+root.geometry("400x400")
 
-if __name__ == "__main__":
-    main()
+chat_area = scrolledtext.ScrolledText(root, wrap=tk.WORD, state=tk.DISABLED)
+chat_area.pack(expand=True, fill=tk.BOTH)
+
+entry_message = tk.Entry(root, width=50)
+entry_message.pack(side=tk.LEFT, padx=5, pady=5, expand=True, fill=tk.X)
+
+send_button = tk.Button(root, text="Send", command=send_message)
+send_button.pack(side=tk.RIGHT, padx=5, pady=5)
+
+# In a real application, you might have a loop or event handling mechanism to receive messages.
+# For this example, I'm simulating the reception of messages every few seconds using `after`.
+def simulate_receive():
+    receive_message()
+    root.after(5000, simulate_receive)
+
+root.protocol("WM_DELETE_WINDOW", on_close)
+
+root.after(5000, simulate_receive)  # Simulate receiving messages every 5 seconds.
+
+root.mainloop()
